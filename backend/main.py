@@ -18,10 +18,7 @@ from methods import (
 
 app = FastAPI(title="Domain Recon Analyzer")
 
-SERVICE_API_KEY = "supersecretkey123"
-LLM_API_URL = os.environ.get("LLM_API_URL")
-LLM_API_KEY = os.environ.get("LLM_API_KEY")
-
+SERVICE_API_KEY = "gilbert-az-desertops-110f"
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 async def analyze(request: AnalyzeRequest):
@@ -70,6 +67,7 @@ async def analyze(request: AnalyzeRequest):
         defensive_registration_likelihood = llm_result.get(
             "defensive_registration_likelihood", defensive_registration_likelihood
         )
+        last_update = llm_result.get("last_update", last_update)
         release_recommendation = llm_result.get("release_recommendation", release_recommendation)
     
     notes = "LLM analysis applied" if llm_result else None
