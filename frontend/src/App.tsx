@@ -7,7 +7,9 @@ import { analyzeDomain } from './services/analyzeApi'
 import type { DomainResult } from './types/domainResult'
 import { exportResultsToWorkbook, parseExcelDomains } from './utils/excelParser'
 
-const DEFAULT_BACKEND_URL = '/api'
+const RENDER_BACKEND_URL = 'https://desertops-domainrecon.onrender.com'
+const DEFAULT_BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL ?? (import.meta.env.DEV ? '/api' : RENDER_BACKEND_URL)
 const DEFAULT_API_KEY = ''
 const CONCURRENCY = 4
 

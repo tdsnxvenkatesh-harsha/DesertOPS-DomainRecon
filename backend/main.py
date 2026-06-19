@@ -3,6 +3,7 @@ from typing import Any, Dict
 
 from bs4 import BeautifulSoup
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 from classes import AnalyzeRequest, AnalyzeResponse
 from methods import (
@@ -19,6 +20,21 @@ from methods import (
 app = FastAPI(title="Domain Recon Analyzer")
 
 SERVICE_API_KEY = "gilbert-az-desertops-110f"
+CORS_ALLOW_ORIGINS = os.environ.get("CORS_ALLOW_ORIGINS", "*")
+
+allow_origins = (
+    ["*"]
+    if CORS_ALLOW_ORIGINS.strip() == "*"
+    else [origin.strip() for origin in CORS_ALLOW_ORIGINS.split(",") if origin.strip()]
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allow_origins,
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 async def analyze(request: AnalyzeRequest):
