@@ -17,6 +17,8 @@ dist/
 # Env / secrets
 .env
 .env.*
+OPENAI KEY.txt
+*KEY*.txt
 
 # Editor / OS
 .vscode/

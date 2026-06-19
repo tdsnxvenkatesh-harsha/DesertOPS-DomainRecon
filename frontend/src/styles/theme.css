@@ -82,6 +82,7 @@ label {
 }
 
 input,
+select,
 button {
   border-radius: 8px;
   border: 1px solid var(--border);
@@ -156,6 +157,42 @@ button:disabled {
 
 .search-input {
   width: min(360px, 100%);
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.filter-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+}
+
+.filter-control select {
+  min-width: 150px;
+  max-width: 220px;
+}
+
+.filter-clear {
+  align-self: flex-end;
+}
+
+.filter-count {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
 }
 
 .table-wrap {
