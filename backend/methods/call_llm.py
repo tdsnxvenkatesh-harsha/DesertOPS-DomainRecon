@@ -1,32 +1,42 @@
 import os
 from typing import Any, Dict, Optional
+import json
 
-import httpx
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
 
-LLM_API_URL = os.environ.get("LLM_API_URL")
-LLM_API_KEY = os.environ.get("LLM_API_KEY")
+load_dotenv()
+
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 
 
 async def call_llm(domain: str, summary: str) -> Optional[Dict[str, Any]]:
-    if not LLM_API_URL:
+    if not OPENAI_API_KEY:
         return None
 
-    payload = {
-        "prompt": (
-            "Analyze the following domain and site summary for content status, likely purpose, "
-            "defensive registration likelihood, and release recommendation. Return JSON with keys: content_status, likely_purpose, defensive_registration_likelihood, release_recommendation. "
-            f"Domain: {domain}. Summary: {summary}"
-        )
-    }
-    headers = {"Authorization": f"Bearer {LLM_API_KEY}"} if LLM_API_KEY else {}
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     try:
-        async with httpx.AsyncClient(timeout=20.0, headers=headers) as client:
-            response = await client.get(LLM_API_URL, params=payload)
-            response.raise_for_status()
-            try:
-                return response.json()
-            except ValueError:
-                return None
-    except httpx.HTTPError:
+        response = await client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "Analyze the following domain and site summary for content status, likely purpose, defensive registration likelihood, last update, and release recommendation. Return ONLY a valid JSON response with proper formatting and these exact keys: content_status, likely_purpose, defensive_registration_likelihood, last_update, release_recommendation. Ensure the JSON is properly formatted with line breaks and indentation."
+                },
+                {
+                    "role": "user",
+                    "content": f"Domain: {domain}. Summary: {summary}"
+                }
+            ]
+        )
+        
+        content = response.choices[0].message.content
+        return json.loads(content)
+    except (ValueError, KeyError, json.JSONDecodeError) as e:
+        print(f"Error parsing LLM response: {e}")
+        return None
+    except Exception as e:
+        print(f"OpenAI API Error: {e}")
         return None
