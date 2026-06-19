@@ -90,8 +90,11 @@ async def call_llm(
     prompt = _build_prompt(domain, summary, signals or {})
 
     try:
-        response = await client.responses.create(model=OPENAI_MODEL, input=prompt)
+        response = await client.chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[{"role": "user", "content": prompt}],
+        )
     except Exception:  # noqa: BLE001 - any API/network error degrades gracefully
         return None
 
-    return _parse_output(getattr(response, "output_text", "") or "")
+    return _parse_output(response.choices[0].message.content)
