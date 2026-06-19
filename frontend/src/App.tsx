@@ -8,7 +8,7 @@ import type { DomainResult } from './types/domainResult'
 import { exportResultsToWorkbook, parseExcelDomains } from './utils/excelParser'
 
 const DEFAULT_BACKEND_URL = '/api'
-const DEFAULT_API_KEY = 'gilbert-az-desertops-110f'
+const DEFAULT_API_KEY = ''
 const CONCURRENCY = 4
 
 function wait(ms: number): Promise<void> {
